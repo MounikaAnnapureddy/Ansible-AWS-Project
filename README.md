@@ -28,7 +28,7 @@ In this project we use ansible to deploy a website on multiple instances.
 6. In the inbound rules, click on add rule to add another rule. The values for this rule would be: "Type: SSH, Source: Custom; from the dropdown select 'ansible machine sg'".
 7. Scroll down and click on "Create Security Group".
 
-Now that we have created security groups for both the ansible maching and web servers, now we have to launch the EC2 instance for the ansible machine.
+**Now that we have created security groups for both the ansible maching and web servers, now we have to launch the EC2 instance for the ansible machine.**
 # Launch the EC2 instance for the ansible machine
 1. In the search bar look for EC2. Select EC2.
 2. Click on Launch Instances.
@@ -38,3 +38,45 @@ Now that we have created security groups for both the ansible maching and web se
 6. Scroll down to Key Pair (login) => "Create new key pair => name it whatever you want to but I named it as myec2key, key pairtype as RSA,  private key file format as .pem => click on create key pair".
 7. Scroll down to Network Settings  => "click on  Edit => Keep the VPC value for the default VPC, For the subnet value it doesn't matter if we give a value or not however I have given the us-east-1a, Firewall(security groups) => select existing security group => click the dropdown of common security groups => select ansible machine's security group which is 'ansible machine sg' which we created earlier, atlast click on the Launch Instance".
 8. We have successfully launched the EC2 instance for ansible machine. To see it, click on the instances or view all instances.
+
+****Now that we have launched an EC2 instance for ansible machine, we need to install ansible on this EC2 instance, ssh into this instance and create a keypair. The keypair is used to establish an ssh connection between the ansible machine and the servers we want to configure**
+# SSH into ansible server
+1. In the AWS instances page where you can see the ansible machine that you have created,  in this case it is named as 'ansible-machine'. Select the ansible-machine.
+2. Copy the Public IPv4 address.
+3. If you are using putty give the host name as ec2-user@YOURPUBLICIPADDRESS. Replace YOURPUBLICIPADDRESS with the copied Public IPv4 address. Select SSH->Auth->Browse for the myec2key.pem file for the 'private key file for authentication' field -> click ope -> click yes.
+   Alternatively, if you are using your linux terminal. you can use the below commands.
+   bash
+   cd "PATH TO THE DIRECTORY WHERE YOUR PEM FILE IS LOCATED"
+   ls
+   chmod 600 myec2key.pem
+   ssh -i myec2key.pem ec2-user@YOURPUBLICIPADDRESS
+4.  Now to create a key pair on the ansible machine. Run the command: ssh-keygen -t rsa -b 2048.
+    And press enter thrice.
+   Here the t stands for type and the type is rsa. b stands for bytes and the byte we want to create is 2048.
+5. Now we have created a succesful key pair(public and private keys) and it is located in "/home/ec2-user/.ssh/"
+6. Now let's go into this directory /home/ec2-user/.ssh/. Before, going into this directory, let's check our current working directory as we will be in home directory by default at this time. To check your present working directory, use the command: pwd. Press enter. You will see that you are already in /home/ec2-user directory.
+7. All we have to do now is to change the directory to .ssh as we are already in /home/ec2-user directory. Use the command: cd .ssh. Once you enter this command, you will be in the .ssh directory.
+8. Once you are in .ssh directory, give the command: ls which will lists the files of this directory. You must see the files authorized_keys, id_rsa, id_rsa.pub files.
+   id_rsa is the private key, id_rsa.pub is the public key.
+
+**Now that we have the public key, private key and authorized keys, we need to  import this public key into the EC2 instance, so that when we launch the servers we can this key to them**
+# Import this public key into the EC2 instance (ansible-machine)
+1. Print the content of the public key using the below command.
+   cat id_rsa.pub
+2. Now copy the content of the public key
+3. Go to AWS console again and on the left side of the instance page, if you scroll down, you will network & security.
+4. Under Network & Secuirty, select Key Pairs. On the top right, select Actions->import key pair -> name it whatever you wnat but I named it as ansible-public-key, under the Key Pair File field paste the public key we have copied from the terminal (the key you have copied after entering the command in step 1) -> click import key pair.
+
+**Now that we have successfully imported the public key of a key pair we created on the ansible machine to the EC2 instance.So, when we launch the servers we want to connect to, we will add this keypair to those servers**
+# Launch the servers to configure using ansible
+1. Go to the AWS Console and click on EC2 dashboard.
+2. Click on Launch instance
+3. Name the instance. I named it as server.
+4. To the right, you will see a field 'Number of Instances". Select 3 to create  3 instances at a time.
+5. Now scroll down to Application and OS Images (Amazon Machine Image) => "Quick Start  => select Amazon Linux", "Amazon Machine Image (AMI) => select Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type (free tier eligible)".
+6. Scroll down to Instance type => "Instance type => select t2.micro (free tier eligible)".
+7. Scroll down to Key Pair (login) => "click on the key pair name drop down => select the key pair that we have created in the step 4 of Import this public key into the EC2 instance (ansible-machine). In this case, I named it as 'ansible-public-key' when I created it.".
+8. Scroll down to Network Settings  => "click on  Edit => Keep the VPC value for the default VPC, For the subnet value it doesn't matter if we give a value or not however I have given the us-east-1b, Firewall(security groups) => select existing security group => click the dropdown of common security groups => select server's security group which is 'server sg' which we created earlier, atlast click on the Launch Instance".
+9. We have successfully launched 3 EC2 instance for our web servers. To see it, click on the instances or view all instances.
+
+
