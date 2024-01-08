@@ -95,4 +95,22 @@ In this project we use ansible to deploy a website on multiple instances.
 **Now that we have successfully tested the connection between the ansible machine and the servers, we have to install the ansible on the ansible machine.**
 # Install Ansible on Ansible machine
 1. Update the EC2 instance using the command: **sudo yum update -y**
+2. To install ansible, use the command: **sudo amazon-linux-extras install ansible2 -y**
+3. Now that ansible is installed successfully, verify it using the command: **ansible --version**. You should see something like the below one:
+  ansible 2.9.23
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = [u'/home/ec2-user/.ansible/plugins/modules', u'/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python2.7/site-packages/ansible
+  executable location = /usr/bin/ansible
+  python version = 2.7.18 (default, Oct 19 2023, 21:17:03) [GCC 7.3.1 20180712 (Red Hat 7.3.1-17)]
+
+**Now that we have successfully installed ansible, we have to create an inventory file on the ansible machine. Inventory file contains the Private IP addresses of the target servers which are the servers that we want ansible to connect to.**
+# Create an inventory file
+1. To create the inventory file, use the command: **sudo vi inventory**. This will create and open the inventory file in the vi editor.
+2. To add content to this file press escape 'esc' key on your keyboard and then press i. Now copy and paste the Private IPv4 Addresses of all the 3 servers into this file.
+3. Once after you entered these 3 servers IP addresses, press esc key and give **:wq!** and press enter to save and exit from the file.
+4. To see the inventory file, use the command: **ls**.
+5. To print the contents of the inventory file, use the command: **cat inventory**. You must see the ip addresses that you have entered in this inventory file.
+
+**Now that we have an inventory file, let's also create an ansible playbook. Ansible playbook contains a list of commands also known as tags that we want to run on the servers to install our website**
    
