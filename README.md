@@ -43,26 +43,26 @@ In this project we use ansible to deploy a website on multiple instances.
 # SSH into ansible server
 1. In the AWS instances page where you can see the ansible machine that you have created,  in this case it is named as 'ansible-machine'. Select the ansible-machine.
 2. Copy the Public IPv4 address.
-3. If you are using putty give the host name as ec2-user@YOURPUBLICIPADDRESS. Replace YOURPUBLICIPADDRESS with the copied Public IPv4 address. Select SSH->Auth->Browse for the myec2key.pem file for the 'private key file for authentication' field -> click ope -> click yes.
+3. If you are using putty give the host name as **ec2-user@YOURPUBLICIPADDRESS**. Replace YOURPUBLICIPADDRESS with the copied Public IPv4 address. Select SSH->Auth->Browse for the myec2key.pem file for the 'private key file for authentication' field -> click ope -> click yes.
    Alternatively, if you are using your linux terminal. you can use the below commands.
-   bash
+   **bash
    cd "PATH TO THE DIRECTORY WHERE YOUR PEM FILE IS LOCATED"
    ls
    chmod 600 myec2key.pem
-   ssh -i myec2key.pem ec2-user@YOURPUBLICIPADDRESS
+   ssh -i myec2key.pem ec2-user@YOURPUBLICIPADDRESS**
 4.  Now to create a key pair on the ansible machine. Run the command: ssh-keygen -t rsa -b 2048.
     And press enter thrice.
    Here the t stands for type and the type is rsa. b stands for bytes and the byte we want to create is 2048.
 5. Now we have created a succesful key pair(public and private keys) and it is located in "/home/ec2-user/.ssh/"
-6. Now let's go into this directory /home/ec2-user/.ssh/. Before, going into this directory, let's check our current working directory as we will be in home directory by default at this time. To check your present working directory, use the command: pwd. Press enter. You will see that you are already in /home/ec2-user directory.
-7. All we have to do now is to change the directory to .ssh as we are already in /home/ec2-user directory. Use the command: cd .ssh. Once you enter this command, you will be in the .ssh directory.
-8. Once you are in .ssh directory, give the command: ls which will lists the files of this directory. You must see the files authorized_keys, id_rsa, id_rsa.pub files.
+6. Now let's go into this directory /home/ec2-user/.ssh/. Before, going into this directory, let's check our current working directory as we will be in home directory by default at this time. To check your present working directory, use the command: **pwd**. Press enter. You will see that you are already in /home/ec2-user directory.
+7. All we have to do now is to change the directory to .ssh as we are already in /home/ec2-user directory. Use the command: **cd .ssh**. Once you enter this command, you will be in the .ssh directory.
+8. Once you are in .ssh directory, give the command: **ls** which will lists the files of this directory. You must see the files authorized_keys, id_rsa, id_rsa.pub files.
    id_rsa is the private key, id_rsa.pub is the public key.
 
 **Now that we have the public key, private key and authorized keys, we need to  import this public key into the EC2 instance, so that when we launch the servers we can this key to them**
 # Import this public key into the EC2 instance (ansible-machine)
 1. Print the content of the public key using the below command.
-   cat id_rsa.pub
+   **cat id_rsa.pub**
 2. Now copy the content of the public key
 3. Go to AWS console again and on the left side of the instance page, if you scroll down, you will network & security.
 4. Under Network & Secuirty, select Key Pairs. On the top right, select Actions->import key pair -> name it whatever you wnat but I named it as ansible-public-key, under the Key Pair File field paste the public key we have copied from the terminal (the key you have copied after entering the command in step 1) -> click import key pair.
@@ -77,12 +77,12 @@ In this project we use ansible to deploy a website on multiple instances.
 6. Scroll down to Instance type => "Instance type => select t2.micro (free tier eligible)".
 7. Scroll down to Key Pair (login) => "click on the key pair name drop down => select the key pair that we have created in the step 4 of Import this public key into the EC2 instance (ansible-machine). In this case, I named it as 'ansible-public-key' when I created it.".
 8. Scroll down to Network Settings  => "click on  Edit => Keep the VPC value for the default VPC, For the subnet value it doesn't matter if we give a value or not however I have given the us-east-1b, Firewall(security groups) => select existing security group => click the dropdown of common security groups => select server's security group which is 'server sg' which we created earlier, atlast click on the Launch Instance".
-9. We have successfully launched 3 EC2 instance for our web servers. To see it, click on the instances or view all instances.
+9. We have successfully launched 3 EC2 instances for our web servers. To see it, click on the instances or view all instances.
 
 **Now that we have successfully created 3 EC2 instances for the wweb servers, let's test the connection between the ansible machine and the 3 servers**
 # Test the connection between the ansible machine and the 3 servers
 1. Go to the terminal and change the directory from .ssh to home.
-2. To change the directory to home, use the command: cd ~
+2. To change the directory to home, use the command: **cd ~**
 3. To check if you are in the home directory or not, check your present working directory using the command: **pwd**.  You must see **/home/ec2-user** as your current directory. Now we are in the ansible machine
 4. To test the connection, go to AWS instances -> select server -> copy the Private IPv4 address.
 5. Come back to the terminal and enter the command: **ssh YOURPRIVATEIPADDRESS** and press enter and type yes and again press enter. Paste the Private IPv4 Address which we have copied from the instance in the place of YOURPRIVATEIPADDRESS.
