@@ -79,4 +79,20 @@ In this project we use ansible to deploy a website on multiple instances.
 8. Scroll down to Network Settings  => "click on  Edit => Keep the VPC value for the default VPC, For the subnet value it doesn't matter if we give a value or not however I have given the us-east-1b, Firewall(security groups) => select existing security group => click the dropdown of common security groups => select server's security group which is 'server sg' which we created earlier, atlast click on the Launch Instance".
 9. We have successfully launched 3 EC2 instance for our web servers. To see it, click on the instances or view all instances.
 
+**Now that we have successfully created 3 EC2 instances for the wweb servers, let's test the connection between the ansible machine and the 3 servers**
+# Test the connection between the ansible machine and the 3 servers
+1. Go to the terminal and change the directory from .ssh to home.
+2. To change the directory to home, use the command: cd ~
+3. To check if you are in the home directory or not, check your present working directory using the command: **pwd**.  You must see **/home/ec2-user** as your current directory. Now we are in the ansible machine
+4. To test the connection, go to AWS instances -> select server -> copy the Private IPv4 address.
+5. Come back to the terminal and enter the command: **ssh YOURPRIVATEIPADDRESS** and press enter and type yes and again press enter. Paste the Private IPv4 Address which we have copied from the instance in the place of YOURPRIVATEIPADDRESS.
+6. The connection test should be successful. To verify if your connection is succesful or not, you can check which IP address is showing up after the completion of step 5. If it is success, you should see, [ec2-user@ip-**SERVERPRIVTAEIPADDRESS** ~]$ , which you have entered in the command: **ssh YOURPRIVATEIPADDRESS**.
+7. To exit from the server's IP and come back to ansible machine, enter the command: **exit**. To verify if you are on the ansible maachine's connection or not, go to aws instances and select ansible-machine instance and verify if the private IPv4 address in the aws instances and the private IP address of the **[ec2-user@ANSIBLEMACHINEPRIVATEIP ~]** are the same. If they are same, that means you are now in ansible machine connection.
+**REPEAT STEPS 1 TO 7 FOR THE REMAINING 2 SERVERS AS WELL TO TEST THE CONNECTION**
 
+************TO ESTABLISH THE CONNECTION BETWEEN ANSIBLE MACHINE AND THE SERVERS WITH OUR KEY PAIR, THE PRIVATE KEY IS REMAINED ON THE ANSIBLE MACHINE, AND THE PUBLIC KEY IS SHARED WITH THE SERVERS. NOTE THAT, WE HAVE NOT INSTALLED ANSIBLE ON THE ANSIBLE MACHINE YET. THE CONNECTION IS ESTABLISHED USING THE KEY PAIRS AND SECURITY GROUPS************
+
+**Now that we have successfully tested the connection between the ansible machine and the servers, we have to install the ansible on the ansible machine.**
+# Install Ansible on Ansible machine
+1. Update the EC2 instance using the command: **sudo yum update -y**
+   
