@@ -30,3 +30,11 @@ In this project we use ansible to deploy a website on multiple instances.
 
 Now that we have created security groups for both the ansible maching and web servers, now we have to launch the EC2 instance for the ansible machine.
 # Launch the EC2 instance for the ansible machine
+1. In the search bar look for EC2. Select EC2.
+2. Click on Launch Instances.
+3. Name it as ansible-machine.
+4. Now scroll down to Application and OS Images (Amazon Machine Image) => "Quick Start  => select Amazon Linux", "Amazon Machine Image (AMI) => select Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type (free tier eligible)". 
+5. Scroll down to Instance type => "Instance type => select t2.micro (free tier eligible)".
+6. Scroll down to Key Pair (login) => "Create new key pair => name it whatever you want to but I named it as myec2key, key pairtype as RSA,  private key file format as .pem => click on create key pair".
+7. Scroll down to Network Settings  => "click on  Edit => Keep the VPC value for the default VPC, For the subnet value it doesn't matter if we give a value or not however I have given the us-east-1a, Firewall(security groups) => select existing security group => click the dropdown of common security groups => select ansible machine's security group which is 'ansible machine sg' which we created earlier, atlast click on the Launch Instance".
+8. We have successfully launched the EC2 instance for ansible machine. To see it, click on the instances or view all instances.
