@@ -1,2 +1,2 @@
-ansible.cfg
+inventory
 #add your server private ip addresses to this file
