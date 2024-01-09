@@ -1,1 +1,2 @@
 ansible.cfg
+#add your server private ip addresses to this file
