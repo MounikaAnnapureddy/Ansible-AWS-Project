@@ -113,4 +113,23 @@ In this project we use ansible to deploy a website on multiple instances.
 5. To print the contents of the inventory file, use the command: **cat inventory**. You must see the ip addresses that you have entered in this inventory file.
 
 **Now that we have an inventory file, let's also create an ansible playbook. Ansible playbook contains a list of commands also known as tags that we want to run on the servers to install our website**
-   
+# Create a playbook to install our website
+1. To create a playbook(file), use the command: **sudo vi deploy-nodejs-aws-app.yml**. This command will create and open a vi editor to enter our code.
+2. Refer to the **deploy-nodejs-aws-app.yml** code that I upload in this repository.
+3. Once you have your code, save and exit the deploy-nodejs-aws-app.yml code from the editor by using the esc with :wq!.
+   **Before we run the playbook, test again to see if the ansible can connect to the servers**
+4. USe the command: **ansible all --key-file ~/.ssh/id_rsa -i inventory -m ping -u ec2-user** to test the connection. Here, 'all' specifies all the servers, key-file is flag for key file, ~/.ssh/id_rsa specifies the path to the key file(private) on the ansible server, i is the inventory flag, inventory is the name of the inventory file, m represents the module, ping is the module to ping the servers to make sure that ansible can connect to them, u is the user name flag,ec2-user is the user name of the servers that we want to connect.
+5. Once you enter  the above command, you should see a SUCCESS message for all the 3 servers.
+
+**Once you have verified the successful connection, we need to run the ansible playbook. However, before running the ansible playbook, we need to create an ansible configuration file. In the ansible configuration file, we will list the path to the keypair, inventory file and EC2 user name, as default, so that anytime we want to run our playbook we don't have to keep entering this information.**
+# Create Ansible Configuration File
+1. To create a ansible configuration file, use the command: **sudo vi ansible.cfg**. This command will create and open a vi editor to enter our code.
+2. Enter the below code in the vi editor and save the file (esc,:wq!).
+**[defaults]
+remote_user = ec2-user
+inventory = inventory
+private_key_file = ~/.ssh/id_rsa**
+
+**Now that we have ansible configuration file, playbook and everythin setup, we can run the ansible playbook to install the website on the servers**
+1. The command to run an ansible playbook is: **ansible-playbook deploy-nodejs-aws-app.yml**
+
