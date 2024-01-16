@@ -73,8 +73,8 @@
         - "STATIC_DIR=./client"
         - "PUBLISHABLE_KEY=pk_test_51OS6mWF95hysrTjz0DrQpIdBxoA6sRPMWoXC9lme9ckdpz8E9dtUNEYsJSG0nGBO8yahLXWGGPzFAzsDGVdOwctg00OmsrvcUT"
         - "SECRET_KEY=sk_test_51OS6mWF95hysrTjzp6M0jXGcoXbmxXDGhSECjzgAMdjJrwmNrYnX7dDg1V0fTn4mcXESgIwFP01u1bi3lWGK74Jm00vQFv4D7I"
-        - "EMAIL_USER=annapureddy1497@gmail.com"
-        - "EMAIL_PASSWORD=September@14"
+        - "EMAIL_USER=********"
+        - "EMAIL_PASSWORD=*********"
 
     - name: Install application dependencies
       npm:
