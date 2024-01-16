@@ -1,54 +1,93 @@
 ---
-
-- name: deploy jupiter website
-  hosts: 
-  become: 
-  become_user: 
+- name: Deploy Node.js App on AWS EC2
+  hosts: all
+  gather_facts: true
+  become: true
+  vars:
+    app_name: "Node-JS-AWS-Devops-App"
+    app_repo_url: "https://github.com/MounikaAnnapureddy/{{ app_name }}"
+    app_port: 3000
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
 
   tasks:
-    - name: update ec2 instance
+    - name: Update yum package cache
       yum:
-        name: 
-        state: 
-        update_cache: 
-
-    - name: install apache server
-      yum:
-        name: 
-        state: 
-
-    - name: change directory to the html directory
+        name: "*"
+        state: latest
+    
+    - name: Add NodeSource repository
       shell: 
+        cmd: "curl -sL https://rpm.nodesource.com/setup_14.x | bash -"
+      become: true
 
-    - name: download web files from github
-      get_url:
-        url: 
-        dest: 
+    - name: Install node.js and npm
+      yum:
+        name: "nodejs"
+        state: present
+      become: true
 
-    - name: unzip the zip folder
-      ansible.builtin.unarchive:
-        src: 
-        dest: 
-        remote_src: 
+    - name: Install Git
+      yum:
+        name: "git"
+        state: present
+      become: true
 
-    - name: copy webfiles from the jupiter-main directory to the html directory
-      copy: 
-        src: 
-        dest: 
-        remote_src: 
+    - name: Ensure correct ownership of the application directory
+      file:
+        path: "/opt/{{ app_name }}"
+        state: directory
+        owner: ec2-user
+        group: ec2-user
+      become: yes
+      become_user: root
 
-    - name: remove the jupiter-main directory
-      file: 
-        path: 
-        state: 
+    - name: Clone the application repository
+      git:
+        repo: "{{ app_repo_url }}"
+        dest: "/opt/{{ app_name }}"
+        version: main
+        force: yes
+      remote_user: ec2-user
+      become: true
 
-    - name: remove the jupiter-main.zip folder
-      file: 
-        path: 
-        state: 
+    - name: Copy necessary files (JS, HTML, CSS, images, etc.)
+      copy:
+        src: "/home/annapureddy478/{{ app_name }}"
+        dest: "/opt/{{ app_name }}"
+      remote_user: ec2-user
+      become: true
 
-    - name: start apache server, if not started
-      ansible.builtin.service:
-        enabled: 
-        name: 
-        state: 
+    - name: Copy .env file to the application directory
+      copy:
+        src: "/home/annapureddy478/{{ app_name }}/.env"
+        dest: "/opt/{{ app_name }}/.env"
+      become: true
+
+    - name: Set environment variables in .env file
+      lineinfile:
+        path: "/opt/{{ app_name }}/.env"
+        line: "{{ item }}"
+      loop:
+        - "DOMAIN=http://localhost:3000"
+        - "PORT=3000"
+        - "STATIC_DIR=./client"
+        - "PUBLISHABLE_KEY=pk_test_51OS6mWF95hysrTjz0DrQpIdBxoA6sRPMWoXC9lme9ckdpz8E9dtUNEYsJSG0nGBO8yahLXWGGPzFAzsDGVdOwctg00OmsrvcUT"
+        - "SECRET_KEY=sk_test_51OS6mWF95hysrTjzp6M0jXGcoXbmxXDGhSECjzgAMdjJrwmNrYnX7dDg1V0fTn4mcXESgIwFP01u1bi3lWGK74Jm00vQFv4D7I"
+        - "EMAIL_USER=annapureddy1497@gmail.com"
+        - "EMAIL_PASSWORD=September@14"
+
+    - name: Install application dependencies
+      npm:
+        path: "/opt/{{ app_name }}"
+        state: present
+
+    - name: Start the Node.js application with environment variables
+      command: "npm start"
+      args:
+        chdir: "/opt/{{ app_name }}"
+      async: 300
+      poll: 0
+      environment:
+        NODE_ENV: "production"
+      become_user: ec2-user
+      ignore_errors: true
